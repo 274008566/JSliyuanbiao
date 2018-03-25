@@ -1,0 +1,139 @@
+ <!-- 变量赋值练习 -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>变量赋值</title>
+<script type="text/javascript">
+var num1;
+num1=10-5;
+var num2=num1+6;
+ document.write("num1的值是:"+num1+"元"+"<br>");
+ document.write("num2的值是:"+num2+"元买个铅笔盒");
+</script>
+</head>
+<body>
+</html>
+
+
+
+<!-- 自增与自减练习 -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>++/--</title>
+<script type="text/javascript">
+var numa=1;
+var numb=7;
+numa++;
+numb--;
+document.write("numa的值:"+numa+"<br/ >");
+document.write("numb的值:"+numb);
+</script>
+
+
+
+<!-- 比较操作符 -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>比较操作符</title>
+<script type="text/javascript">
+var numa,numb,jq1,jq2;
+numa=1;
+numb=7;
+jq1=numa>numb;
+jq2=numa!=numb;
+document.write("numa大于numb的分数吗？"+jq1+"<br>")
+document.write("numa不等于numb的分数吗？"+ jq2);
+</script>
+
+
+
+
+<!-- 数组赋值 -->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>数组赋值</title>
+<script language="javascript">
+//var myarr = new Array(88,90,68);方法2 
+ var myarr = new Array(3); 
+myarr[0] = 88; 
+myarr[1] = 90; 
+myarr[2] = 68; 
+//myarr[3] = 100; 
+  document.write("数组第一个值是:"+myarr[0]+"<br>");
+  document.write("数组第二个值是:"+myarr[1]+"<br>");
+  document.write("数组第三个值是:"+myarr[2]+"<br>");
+</script>
+</head>
+
+
+
+
+<!-- 在数组中添加新元素 -->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>增加新元素</title>
+<script language="javascript">
+ var myarray=new Array();
+ myarray[0]=88;
+ myarray[1]=90;
+ myarray[2]=68;
+
+ document.write("数组第一个值是:"+myarray[0]+"<br>");
+ document.write("数组第二个值是:"+myarray[1]+"<br>");
+ document.write("数组第三个值是:"+myarray[2]+"<br>");
+ document.write("数组新增加的值是:"+myarray[3]+"<br>"); 
+</script>
+</head>
+
+
+
+
+<!-- 操作符练习题 -->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>操作符优先级</title>
+<script type="text/javascript">
+var numa,numb,jq1;
+numa=5;
+numb=2;
+jq1=numa + 30 >10 && numb * 3<20;
+jq2=((numa + 30) / (7-numb)) * 3
+document.write("jq1的值是:"+jq1+"<br>");
+document.write("jq2的值是:"+jq2);
+</script>
+</head>
+
+
+
+<!-- if-else语句 -->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>if...else</title>
+<script type="text/JavaScript">
+var ticket =true; //ticket初值为true，表示有票
+?(ticket)  
+{
+document.write("有票，可以看电影。");
+}
+	  
+{
+document.write("没票，电影看不成。");
+}
+
+
+/*if-else嵌套语句*/
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>if...else</title>
+<script type="text/JavaScript">
+var myage =99;//赵红的年龄为99
+if(myage<=44)
+  {document.write("青年");}
+else if(myage<=59) 
+  {document.write("中年人");}
+else if(myage<=89)
+  {document.write("老年人");}
+else       
+  {document.write("长寿老年人");}
+</script>
+</head>
+
+
+<!--  -->
