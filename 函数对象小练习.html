@@ -1,0 +1,56 @@
+function Foo(){
+    getName = function(){
+        alert(1);
+    };
+   return this;
+}
+
+Foo.getName = function (){alert(2);};
+Foo.prototype.getName=function () {alert(3);};
+var getName = function (){ alert(4);};
+function getName(){alert(5);}
+
+
+//下面的结果
+// 1 Foo.getName();    
+// 2 getName(); 
+// 3 Foo().getName(); 
+// 4 new Foo.getName(); 
+
+1.Foo.getName(); 结果 弹出 2 
+
+2.getName(); 结果 4 
+当变量名字（没有赋值的情况下）和 函数名相同时，优先读取函数
+    eg:
+     var getName
+     function getName(){alert(5);}
+
+     getName();  //结果会是5
+
+3.Foo().getName()；    
+分析：Foo() 函数执行完时，因为Foo()函数中返回了this, 当执行完时，Foo函数内的数据就暴露在了全局环境下，所以 返回的this 也就是Foo()指的是window。
+    eg:
+    getName = function(){
+                alert(1);
+            };
+
+    var getName = function (){ alert(4);};
+    当心误认为window下getname有两个的误区
+
+4.new Foo.getName(); 结果 2
+    eg:
+    var obj1= (function(){
+    var o={}; //创建一个新对象
+    o.__proto__=obj.prototype; //将新对象的原型链指向obj的原型
+    obj.call(o,"hello")  //执行obj函数，将o对象指针指向obj函数，及o拥有了obj原型的属性和方法(引用)
+    return o;
+})()
+    非常重点：这里new 出来的构造函数，会继承实例的原型上边的所有属性和方法。
+
+    这里弹出来的是 2 ，的原因是 
+① new操作符在执行时，执行了call 函数（或者apply函数），Foo.getName() 在new 创建对象时，在其内部执行了。你这里这样写new Foo.getName 也会弹出 2；
+
+②这里生成的构造函数是Foo.getName 的构造函数，如果你不信，可以自己手动为Foo.getName的原型添加一个属性或方法（例如： Foo.getName.prototype.name = 4;），然后让后利用创建的构造函数去访问。
+
+    var ac = new Foo.getName();   
+console.log(ac.name) // 4
