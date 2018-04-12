@@ -1,0 +1,163 @@
+// makeCounter函数返回的是一个新的函数，该函数对makeCounter里的局部变量i享有使用权
+function makeCounter() {
+  // i只是makeCounter函数内的局部变量
+  var i = 0;
+ 
+  return function() {
+    console.log( ++i );
+  };
+}
+ 
+// 注意counter和counter2是不同的实例，它们分别拥有自己范围里的i变量
+ 
+var counter = makeCounter();
+counter(); // 1
+counter(); // 2
+ 
+var counter2 = makeCounter();
+counter2(); // 1
+counter2(); // 2
+ 
+i; // 报错，i没有定义，它只是makeCounter内部的局部变量
+
+
+//定义了一个函数（function foo(){}或者var foo = function(){}），函数名后加上一对小括号即可完成对该函数的调用，比如下面的代码：
+var foo = function(){ /* code */ };
+foo();
+
+
+
+//给它函数名，然后加上()立即调用，同样也会报错，而这次报错原因却不相同：
+function foo(){ /* code */ }(); // SyntaxError: Unexpected token )
+
+
+//在一个表达式后面加上括号，表示该表达式立即执行；而如果是在一个语句后面加上括号，该括号完全和之前的语句不搭嘎，而只是一个分组操作符，用来控制运算中的优先级（小括号里的先运算）。所以以上代码等价于：
+function foo(){ /* code */ }
+(); // SyntaxError: Unexpected token )
+
+
+立即执行函数（IIFE）
+
+
+// 最常用的两种写法
+(function(){ /* code */ }()); // 老道推荐写法
+(function(){ /* code */ })(); // 当然这种也可以
+ 
+// 括号和JS的一些操作符（如 = && || ,等）可以在函数表达式和函数声明上消除歧义
+// 如下代码中，解析器已经知道一个是表达式了，于是也会把另一个默认为表达式
+// 但是两者交换则会报错
+var i = function(){ return 10; }();
+true && function(){ /* code */ }();
+0, function(){ /* code */ }();
+ 
+// 如果你不怕代码晦涩难读，也可以选择一元运算符
+!function(){ /* code */ }();
+~function(){ /* code */ }();
+-function(){ /* code */ }();
++function(){ /* code */ }();
+ 
+// 你也可以这样
+new function(){ /* code */ }
+new function(){ /* code */ }() // 带参数
+
+// 并不会像你想象那样的执行，因为i的值没有被锁住
+// 当我们点击链接的时候，其实for循环已经执行完了
+// 于是在点击的时候i的值其实已经是elems.length了
+var elems = document.getElementsByTagName( 'a' );
+ 
+for ( var i = 0; i < elems.length; i++ ) {
+ 
+  elems[ i ].addEventListener( 'click', function(e){
+    e.preventDefault();
+    alert( 'I am link #' + i );
+  }, 'false' );
+ 
+}
+ 
+// 这次我们得到了想要的结果
+// 因为在立即执行函数内部，i的值传给了lockedIndex，并且被锁在内存中
+// 尽管for循环结束后i的值已经改变，但是立即执行函数内部lockedIndex的值并不会改变
+var elems = document.getElementsByTagName( 'a' );
+ 
+for ( var i = 0; i < elems.length; i++ ) {
+ 
+  (function( lockedInIndex ){
+ 
+    elems[ i ].addEventListener( 'click', function(e){
+      e.preventDefault();
+      alert( 'I am link #' + lockedInIndex );
+    }, 'false' );
+ 
+  })( i );
+ 
+}
+ 
+// 你也可以这样，但是毫无疑问上面的代码更具有可读性
+var elems = document.getElementsByTagName( 'a' );
+ 
+for ( var i = 0; i < elems.length; i++ ) {
+ 
+  elems[ i ].addEventListener( 'click', (function( lockedInIndex ){
+    return function(e){
+      e.preventDefault();
+      alert( 'I am link #' + lockedInIndex );
+    };
+  })( i ), 'false' );
+ 
+}
+
+
+// 这是一个自执行函数，函数内部执行的是自己，递归调用
+function foo() { foo(); }
+ 
+// 这是一个自执行匿名函数，因为它没有函数名
+// 所以如果要递归调用自己的话必须用arguments.callee
+var foo = function() { arguments.callee(); };
+ 
+// 这可能也算是个自执行匿名函数，但仅仅是foo标志引用它自身
+// 如果你将foo改变成其它的，你将得到一个used-to-self-execute匿名函数
+var foo = function() { foo(); };
+ 
+// 有些人叫它自执行匿名函数，尽管它没有执行自己，只是立即执行而已
+(function(){ /* code */ }());
+ 
+// 给函数表达式添加了标志名称，可以方便debug
+// 但是一旦添加了标志名称，这个函数就不再是匿名的了
+(function foo(){ /* code */ }());
+ 
+// 立即执行函数也可以自执行，不过不常用罢了
+(function(){ arguments.callee(); }());
+(function foo(){ foo(); }());
+
+
+// 创建一个立即执行的匿名函数
+// 该函数返回一个对象，包含你要暴露的属性
+// 如下代码如果不使用立即执行函数，就会多一个属性i
+// 如果有了属性i，我们就能调用counter.i改变i的值
+// 对我们来说这种不确定的因素越少越好
+ 
+var counter = (function(){
+  var i = 0;
+ 
+  return {
+    get: function(){
+      return i;
+    },
+    set: function( val ){
+      i = val;
+    },
+    increment: function() {
+      return ++i;
+    }
+  };
+}());
+ 
+// counter其实是一个对象
+ 
+counter.get(); // 0
+counter.set( 3 );
+counter.increment(); // 4
+counter.increment(); // 5
+ 
+counter.i; // undefined i并不是counter的属性
+i; // ReferenceError: i is not defined (函数内部的是局部变量)
