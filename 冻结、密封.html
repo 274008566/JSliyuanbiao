@@ -1,0 +1,181 @@
+var person={};
+Object.defineProperty(person,"name",{
+  writable:false,
+  value:"LYB"
+});
+console.log(person.name);
+person.name="heting";
+console.log(person.name);
+
+//利用了Object.defineProperty()方法来创建了属性和修改了默认值。这里将writable设置为false,于是后面试图修改person.name时，是无效的。
+
+var person={};
+Object.defineProperty(person,"name",{
+  value:"LYB"
+});
+console.log(person.name);
+person.name="heting";
+console.log(person.name);
+//对于通过调用Object.defineProperty()方法创建的属性，其前三个特性的默认值均为false，这里需要注意。
+
+
+
+//密封密封密封密封密封密封、
+(function () {
+    var obj = {             //声明一个对象
+        prop:function(){},
+        foo:"bar"
+    };
+    //可以添加新的属性,已有属性的值可以修改,可以删除
+    obj.foo = "baz";
+    obj.lumpy = "woof";
+    delete obj.prop;
+
+    var o = Object.seal(obj);//将 obj 密封,且返回原对象
+    console.log(o === obj);//true
+    console.log(Object.isSealed(obj) === true);//true
+
+    //仍然可以修改密封对象上的属性的值
+    obj.foo = "quux";//修改成功
+
+    //但不能把密封对象的属性进行重新配置,譬如讲数据属性重定义成访问器属性.
+    //Object.defineProperty(obj,"foo",{get : function(){return "g";}});//抛出 TypeError
+
+    //任何除修改属性值以外的操作都会失败
+    obj.quaxxor = "the friendly duck";//静默失败,属性没有成功添加
+    delete obj.foo;//静默失败,属性没有删除成功
+
+    //在严格模式中,会抛出 TypeError 异常
+    (function fail(){
+        "use strict";
+        //delete obj.foo;//抛出 TypeError 异常
+        //obj.sparky = "arf";//抛出 TYpeError 异常
+    })();
+
+    Object.defineProperty(obj,"ohai",{value :17});//添加属性失败
+    Object.defineProperty(obj,"foo",{value : "eit"});//修改成功
+    console.log(obj.foo);//“eit”
+})();
+
+//创建不可修改值的密封对象
+(function () {
+    //方式一
+    var o = {a:1};
+    Object.defineProperty(o,"a",{configurable:false,writable:false});
+    Object.preventExtensions(o);
+    o.a = 2;
+    console.log(o.a);//1
+    console.log(Object.isExtensible(o) ===false);//true
+    console.log(Object.isSealed(o) === true);//true
+
+    //方式二
+    o = Object.create(Object.prototype,{"a":{value :1,writable:false}});
+    Object.seal(o);
+    o.a = 2;
+    console.log(o.a);//1
+    console.log(Object.isExtensible(o) ===false);//true
+    console.log(Object.isSealed(o) === true);//true
+    
+    //方式...
+})();
+
+
+//冻结冻结冻结冻结冻结冻结冻结冻结
+(function () {
+    //一个对象默认是可扩展的,所以他也是非冻结的.
+    console.log(Object.isFrozen({}) === false);//true
+
+    //一个不可扩展的空对象同时也是一个冻结对象.一个不可扩展的空对象也是密封对象
+    var vacuouslyFrozen = Object.preventExtensions({});
+    console.log(Object.isFrozen(vacuouslyFrozen) === true);//true
+    console.log(Object.isSealed(vacuouslyFrozen) === true);//true
+
+    //一个非空对象默认也是非冻结的.
+    var oneProp = { p:42 };
+    console.log(Object.isFrozen(oneProp) === false);//true
+
+    //让这个对象变的不可扩展,并不意味着这个对象变成了冻结对象,因为 p 属性仍然是可以配置的(而且可写的).
+    Object.preventExtensions( oneProp );
+    console.log(Object.isFrozen(oneProp) === false);//true
+
+    //如果删除了这个属性,则它成为空对象,会成为一个冻结对象.
+    delete oneProp.p;
+    console.log(Object.isFrozen(oneProp) === true);
+
+    //一个不可扩展的对象,拥有一个不可写但可配置的属性,则它仍然是非冻结的.
+    var nonWritable = { e : "plep" };
+    Object.preventExtensions(nonWritable);
+    Object.defineProperty(nonWritable,"e",{writable : false});//不可写
+    console.log(Object.isFrozen(nonWritable) === false);//true
+
+    //把这个属性改为不可配置,会让这个对象成为冻结对象
+    Object.defineProperty(nonWritable,"e",{configurable : false});//不可配置
+    console.log(Object.isFrozen(nonWritable) === true);//true
+
+    //一个不可扩展的对象,拥有一个不可配置但可写的属性,则它仍然是非冻结的.
+    var nonConfigurable = { release : "the kraken!" };
+    Object.preventExtensions(nonConfigurable);
+    Object.defineProperty(nonConfigurable,"release",{configurable : false});
+    console.log(Object.isFrozen(nonConfigurable) === false);//true
+
+    //把这个属性改为不可写,会让这个对象成为冻结对象.
+    Object.defineProperty(nonConfigurable,"release",{writable : false});
+    console.log(Object.isFrozen(nonConfigurable) === true);//true
+
+    //一个不可扩展的对象,值拥有一个访问器,则它仍然是非冻结的.
+    var accessor = {get food(){return "yum";}};//这里使用的是字面值法创建对象,默认可配置
+    Object.preventExtensions(accessor);
+    console.log(Object.isFrozen(accessor) === false);//true
+
+    //把这个属性改为不可配置,会让这个对象成为冻结对象.
+    Object.defineProperty(accessor,"food",{configurable:false});
+    console.log(Object.isFrozen(accessor) === true);//true
+
+
+    //使用 Object.freeze 是冻结一个对象的最方便的方法.
+    var frozen = {1:81};
+    console.log(Object.isFrozen(frozen) === false);//true
+    Object.freeze(frozen);
+    console.log(Object.isFrozen(frozen) === true);//true
+
+    //一个冻结对象也是一个密封对象
+    console.log(Object.isSealed(frozen) === true);//true
+
+    //一个冻结对象也是一个不可扩展对象
+    console.log(Object.isExtensible(frozen) === false);//true
+
+})();
+
+
+
+(function () {
+    var obj = {
+        prop:function(){},
+        foo:"bar"
+    };
+
+    //可以添加新的属性,已有的属性可以被修改或删除
+    obj.foo = "baz";
+    obj.lumpy = "woof";
+    delete obj.prop;
+
+    Object.freeze(obj);//冻结
+
+    console.log(Object.isFrozen(obj) === true);//true
+
+    //对冻结对象的任何操作都会失败
+    obj.foo = "quux";//静默失败;
+    obj.quaxxor = "the friendly duck";//静默失败
+
+    //在严格模式中会抛出 TypeError 异常
+    (function () {
+        "use strict";
+        obj.foo = "sparky";//抛出 TypeError 异常
+        delete obj.quaxxor;//抛出 TypeError 异常
+        obj.sparky = "arf";//抛出 TypeError 异常
+    })();
+
+    //使用 Object.defineProperty方法同样会抛出 TypeError 异常
+    Object.defineProperty(obj,"ohai",{value:17});//抛出 TypeError 异常
+    Object.defineProperty(obj,"foo",{value:"eit"});//抛出 TypeError 异常
+})();
