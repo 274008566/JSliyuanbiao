@@ -1,0 +1,125 @@
+//1. 字面量方式
+    var obj1={x:1,y:2}
+    var obj2={
+        x:1,
+        y:2,
+        o:{
+            z:3,
+            n:4
+        }
+    }
+
+
+//2. 构造函数模式
+function sum(a,b){
+  this.aa= a;
+  this.bb= b;
+  this.add = function(){
+   return (aa+bb);
+  }
+ }
+ var calc =new sum(2,3); 
+console.log(calc.add)   //5
+//这个new关键字是必须，如果不加，sum就不会当成构造函数调用，而只是一个普通的函数，这时候，sum()内部的this指向就会是全局window或者global，将会意外地给他的外部作用域即window添加属性。
+
+
+//3. Object.create()
+var obj=Object.create({x:1})
+obj.x   //1
+typeof obj.toString //function
+obj.hasOwnProperty('x') //false
+
+var obj=Object.create(null)
+obj.toString    //undefined
+//第一行代码，create()方法是Object内置方法，接收了一个对象作为参数，使用访问obj.x将会返回值1。  
+//但是需要注意的是，使用这种方式创建的对象，其实是将obj的__proto__指向了{x:1}这个对象，并不是在obj本身内部创建了一个置为1的属性x，所以hasOwnProperty()方法的时候，将会返回false
+//正是因为Object.create()
+//能够重置对象的__proto__指向，所以如果在第5行代码中，将obj的原型指向了null之后，obj的原型链末端就从Object.prototype变成null，obj本身以及原型链上都不在包含toString这个方法，所以将会返回undefined
+
+
+ //原型链方式
+    function foo(){}
+    foo.prototype.z=3
+    var obj=new foo()
+    obj.y=2
+    obj.x=1
+
+    obj.x   //1
+    obj.y   //2
+    obj.z   //3
+    typeof obj.toString //function
+    'z' in obj  //true
+    obj.hasOwnProperty('z') //false
+
+//以上代码，首先使用function定义了一个函数对象，这个函数对象默认带有了一个名为prototype的隐藏属性，这个prototy属性是一个对象类型的属性，指向这个对象的原型，
+并且在这个属性中存在一个名为__proto__的标签。
+
+
+
+obj.z=5
+obj.hasOwnProperty('z') //true
+foo.prototype.z //3,不变 
+obj.z   //5，发生了变化
+
+obj.z=undefined
+obj.z   //undefined
+
+delete obj.z
+obj.z  
+
+//上面说到，obj.z返回的结果，其实是从obj的原型链上找到的，并不是obj这个对象本身的属性，那么如果在obj对象上再增加一个obj本身的z属性，将会发生什么呢？ 
+//第二段代码的第一行，在obj对象上增加了一个z 属性，值为5，然后使用hasOwnProperty()方法，返回结果true，这表明现在返回的z属性是obj 对象本身的属性，并不是原型链上返回的。 
+
+var o = {
+    appendTo: function ( dom ) {
+    }
+};
+function DivTag() {}
+DivTag.prototype = o;
+
+var div = new DivTag();
+
+
+
+new Function( arg0, arg1, arg2, ..., argN, body );
+Function 中的参数全部是字符串
+//该构造函数的作用是将 参数链接起来组成函数
+//如果参数只有一个, 那么表示函数体
+//如果参数有多个, 那么最后一个参数表示新函数体, 前面的所有参数表示新函数的参数
+//如果没有参数, 表示创建一个空函数
+//创建一个打印一句话的函数
+
+
+创建一个打印一句话的函数
+    // 传统的
+    function foo () {
+        console.log( '你好' );
+    }
+    // Function
+    var func = new Function( 'console.log( "你好" );' );
+    // 功能上, 这里 foo 与 func 等价
+
+创建一个空函数
+    // 传统
+    function foo () {}
+    // Function
+    var func = new Function();
+传入函数内一个数字, 打印该数字
+    // 传统
+    function foo ( num ) {
+        console.log( num );
+    }
+    // Function
+    var func = new Function ( "num" ,"console.log( num );" );
+    func();
+
+
+
+传入函数内一个数字, 打印该数字
+    // 传统
+    function foo ( num ) {
+        console.log( num );
+    }
+    // Function
+    var func = new Function ( "num" ,"console.log( num );" );
+    func();
