@@ -1,0 +1,118 @@
+//事件响应的三种处理方式
+
+//方式一:实现一个ActionListener子类
+
+// 实现了ActionListener接口的类
+public class Button3ActionListener implements ActionListener{
+  public void actionPerformed(ActionEvent e) {
+    String buttonText=((JButton)e.getSource()).getText();
+    
+    System.out.println("你按下了" + buttonText);
+  }
+}
+
+
+
+//方式二:让界面类实现ActionListener接口
+
+public class MyFrame extends JFrame implements ActionListener{
+  public MyFrame() {
+    ....
+    button2.addActionListener(this);
+  }
+  
+  /**
+   * 按钮二的事件响应在此
+   */
+  public void actionPerformed(ActionEvent e) {
+    if(e.getSource()==button2){
+      showMsg("你按下了" + button2.getText());
+    }   
+  }
+}
+
+
+
+//方式三:用匿名类的方式添加事件响应
+
+button1 = new JButton("按钮一");
+
+button1.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        showMsg("你按下了" + button1.getText());
+      }
+});
+
+//HTML事件处理程序
+//即我们直接在HTML代码中添加事件处理程序，如下面这段代码：
+<input id="btn" value="按钮" type="button" onclick="showmsg();">
+　　<script>
+　　 function showmsg(){
+　　 alert("HTML添加事件处理");
+　　 }
+　　</script>
+//从上面的代码中我们可以看出，事件处理是直接嵌套在元素里头的，这样有一个毛病：就是html代码和js的耦合性太强，如果哪一天想要改变js中showmsg，那么不但要再js中修改，还需要到html中修改，一两处的修改我们能接受，但是当你的代码达到万行级别的时候，修改起来就需要劳民伤财了，所以，这个方式我们并不推荐使用。
+
+
+
+//DOM0级事件处理程序
+//即为指定对象添加事件处理，看下面的一段代码：
+<input id="btn" value="按钮" type="button">
+　　<script>
+　　　　var btn= document.getElementById("btn");
+　　 btn.onclick=function(){
+　　　　　　alert("DOM级添加事件处理");
+　　　　} 
+　　　　btn.onclick=null;//如果想要删除btn的点击事件，将其置为null即可
+　　</script>
+//从上面的代码中，我们能看出，相对于HTML事件处理程序，DOM0级事件，html代码和js代码的耦合性已经大大降低。但是，聪明的程序员还是不太满足，期望寻找更简便的处理方式，下面来看第三种处理方法。 
+
+
+//DOM2级事件处理程序
+//DOM2也是对特定的对象添加事件处理程序，但是主要涉及到两个方法，用于处理指定和删除事件处理程序的操作：addEventListener()和 removeEventListener()。它们都接收三个参数：要处理的事件名、作为事件处理程序的函数和一个布尔值（是否在捕获阶段处理事件），看下面的一段代码：
+<input id="btn" value="按钮" type="button">
+　　<script>
+　　 var btn=document.getElementById("btn");
+　　 btn.addEventListener("click",showmsg,false);
+　　 alert("DOM级添加事件处理程序");
+　　 }
+　　 btn.removeEventListener("click",showmsg,false);
+　　</script>
+
+
+//事件冒泡和事件捕获的流程与区别
+说到这里，再给大家来一点代码来说明下事件冒泡和事件捕获的流程，同时也让大家能看出二者的区别：
+<!doctype html>
+　　<html lang="en">
+　　<head>
+　　 <meta charset="UTF-">
+　　 <title>Document</title>
+　　 <style>
+　　 #p{width:px;height:px;border:px solid black;}
+　　 #c{width:px;height:px;border:px solid red;}
+　　 </style>
+　　</head>
+　　<body>
+　　 <div id="p">
+　　 i am www.mahaixiang.cn
+　　 <div id="c">i like www.mahaixiang.cn</div>
+　　 </div>
+　　 <script>
+　　 var p = document.getElementById('p');
+　　 　　var c = document.getElementById('c');
+　　 c.addEventListener('click', function () {
+　　 alert('子节点捕获')
+　　 }, true);
+　　 c.addEventListener('click', function () {
+　　 alert('子节点冒泡')
+　　 }, false);
+　　 p.addEventListener('click', function () {
+　　 alert('父节点捕获')
+　　 }, true);
+　　 p.addEventListener('click', function () {
+　　 alert('父节点冒泡')
+　　 }, false);
+　　 </script>
+　　</body>
+</html>
+
