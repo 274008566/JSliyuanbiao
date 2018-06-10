@@ -1,0 +1,113 @@
+//解构赋值
+
+//简单例子
+<script>
+    "use strict";
+    let [a,b,c] = [1,2,3];
+    console.log( a +"|"+ b +"|"+ c); //输出 1|2|3
+</script>
+
+
+//对象的解构
+"use strict";
+let {o, b, j } = {
+    j:2,
+    b:1,
+    o:0
+};
+console.log(o+b+j); 
+
+//字符串和数字的解构
+"use strict";
+let [a,b,c,d,e ] = "abcde";
+console.log(a+b+c+d+e); 
+
+let {valueOf} = "s";
+console.log(valueOf); 
+
+//解构赋值支持多层嵌套
+<script>
+    var [prehead, [head, ...sub],tail] = [0000,[1,2,3,4,5],6];
+    console.log(prehead, head, sub, tail);
+</script>
+
+//.arg这种写法只能作为最后的参数， 如果在...arg后面加别的参数会报错：
+let [a,...arg,b] = [1,2,3,4,5,6]; //运行到这边直接报错了
+console.log(a);
+console.log(arg);
+console.log(b);
+
+
+let [a,...arg,b] = [1,2,3,4,5,6]; //运行到这边直接报错了
+console.log(a);
+console.log(arg);
+console.log(b);
+
+function* run() {
+    let a = 0;
+    while (true) {
+        yield a;
+        a++;
+    }
+}
+ var [first, second, third, fourth, fifth, sixth] = run();
+ console.log(first+"_"+second+"_"+third+"_"+fourth+"_"+fifth+"_"+sixth);
+
+ //函数的解构赋值
+ "use strict";
+let fn = ( {a, b, c} ) => {
+    console.log(a+"_"+b+"_"+c); 
+};
+fn({a:0,c:22,d:33,b:1111});
+
+//函数的默认值
+let fn = ({a ,b,c, d = "dddd"}) => {
+    console.log(a + b + c + d);
+}
+fn({c:"ccccc",b:"BBBBB",a:"AAAA"}); 
+
+//实际编程中的使用
+//实际使用的时候可能可能是这样的：
+let fn = ( [a,b,c] ) =>  {
+    console.log(a, b, c);
+};
+fn([1,2,3,4]);
+
+//把两个元素交换：
+let [x, y] = [1, 2];
+[x, y] = [y, x];
+console.log(x, y);
+//tip:基本类型的转换可以这样：x = [y, y=x][0];
+
+//遍历JSON数据：
+let json = {j:[0,1],s:[2,3],o:[4,5],n:[6,7]};
+for(let name in json) {
+    let [key, value] = json[name];
+    console.log(key + "_" + value);
+}
+
+//提取json数据, 假设Json是从服务器返回的数据
+let Json = {responseText: "xxxx", responseXML : "XMLXML", responseHeader : "Header"};
+let {responseText, responseXML} = Json;
+console.log( responseText); //输出 xxxx
+
+//可以利用解构 ， 快速取值
+function userId({id}) {
+    return id;
+}
+
+function whois({displayName: displayName, fullName: {firstName: name}}) {
+    console.log(displayName + " is " + name);
+}
+
+var user = {
+    id: 42,
+    displayName: "jdoe",
+    fullName: {
+        firstName: "John",
+        lastName: "Doe"
+    }
+};
+
+console.log("userId: " + userId(user)); // "userId: 42"
+whois(user); // "jdoe is John"
