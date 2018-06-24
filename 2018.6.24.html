@@ -1,0 +1,197 @@
+//函数扩展
+
+
+//箭头函数和普通函数的转换
+//箭头函数里面根本没有自己的this，而是引用外层的this。
+// ES6
+function foo() {
+  setTimeout(() => {
+    console.log('id:', this.id);
+  }, 100);
+}
+
+// ES5
+function foo() {
+  var _this = this;
+
+  setTimeout(function () {
+    console.log('id:', _this.id);
+  }, 100);
+}
+
+//正常模式下的尾递归的实现
+//(1)、“循环”换掉“递归”。
+//(2)、实现示例：
+
+function tco(f) {
+  var value;
+  var active = false;
+  var accumulated = [];
+
+  return function accumulator() {
+    accumulated.push(arguments);
+    if (!active) {
+      active = true;
+      while (accumulated.length) {
+        value = f.apply(this, accumulated.shift());
+      }
+      active = false;
+      return value;
+    }
+  };
+}
+
+var sum = tco(function(x, y) {
+  if (y > 0) {
+    return sum(x + 1, y - 1)
+  }
+  else {
+    return x
+  }
+});
+
+sum(1, 100000)
+
+//通过下列方式创建函数并为参数设置默认值
+
+function makeRequest(url, timeout, callback) {
+    timeout = timeout || 2000;
+    callback = callback || function() {};
+    // 函数的剩余部分
+}
+
+//安全的选择是通过typeof检查参数类型，如下所示
+
+function makeRequest(url, timeout, callback) {
+    timeout = (typeof timeout !== "undefined") ? timeout : 2000;
+    callback = (typeof callback !== "undefined") ? callback : function() {};
+    // 函数的剩余部分
+}
+
+
+let a=Symbol();
+console.log(typeof a);//symbol,js语言的数据类型再添一员
+
+
+Symbol()==Symbol();//false
+let a=Symbol();
+let b=Symbol();
+a==b;//false,symbol数据的特性，每个symbol数据都是独一无二的值，在对象增加属性的时候，可以避免名字重复的困扰
+
+
+let a=Symbol();
+let b=Symbol();
+console.log(a);//Symbol()
+console.log(b);//Symbol(),a与b虽然不相等，但是打印出的数据却是一样的，为了区分他们，可以传参：
+let c=Symbol('ccc');//Symbol(ccc),传入的参数仅做标记，没有任何实际意义
+
+
+let a=Symbol();
+a+'ccc';//报错
+a+2;//报错，symbol类型的数据不能与其他类型的数据进行运算
+
+
+let a=Symbol('aaa');
+String(a);//'Symbol(aaa)'
+Boolean(a);//true
+Number(a);//报错，symbol类型的数据可以转为string与boolean类型，但是不能转换为number类型
+
+
+let a=Symbol();
+let obj1={a:'aaa'};//结果{a:'aaa'}，此时的obj的属性是a
+let obj2={[a]:'aaa'};//{Symbol(): "aaa"},此时obj的属性则是Symbol();
+console.log(obj2[a]);//aaa,取值时候，属性名依然是a
+
+
+let a=Symbol.for('my');
+let b=Symbol.for('my');
+a==b;//true,到此处，看似已经与上面相抵触，其实不然Symbol(my)仅产生了一个symbol数据，a和b都是同一个值，下面可看例子：
+
+let ab=Symbol();
+let a=ab;
+let b=ab;
+a==b;//true,这里便是上例子的解释
+
+
+let a=Symbol('my');
+let b=Symbol.for('my');
+Symbol.keyfor(a);//undefined
+Symbol.keyfor(b);//my
+///Symbol.keyfor()方法接收一个Symbol.for()产生的数据，返回其对应描述(标记)，由于a直接由Symbol()产生，故未能识别
+
+let arr1=[1,2,3];
+let arr2=['a','b'];
+arr1[Symbol.isConcatSpreadable]=false;
+arr1.concat(arr2);//[[1,2,3],a,b]
+arr1[Symbol.isConcatSpreadable]=true;
+arr1.concat(arr2);//[1,2,3,a,b]
+////[Symbol.isConcatSpreadable]表示concat进行拼接时候，是否展开，默认true。
+
+
+//特性
+
+//似于数组，但它的一大特性就是所有元素都是唯一的，没有重复。
+
+//我们可以利用这一唯一特性进行数组的去重工作。
+
+/单一数组的去重。
+
+let set6 = new Set([1, 2, 2, 3, 4, 3, 5])
+console.log('distinct 1:', set6)
+结果：
+
+distinct 1: Set { 1, 2, 3, 4, 5 }
+ 
+
+//多数组的合并去重
+
+let arr1 = [1, 2, 3, 4]
+let arr2 = [2, 3, 4, 5, 6]
+let set7 = new Set([...arr1, ...arr2])
+console.log('distinct 2:', set7)
+结果：
+
+distinct 2: Set { 1, 2, 3, 4, 5, 6 }
+
+操作
+
+1.向Set中添加元素。
+
+let set1 = new Set()
+set1.add(1)
+set1.add(2)
+set1.add(3)
+console.log('added:', set1)
+结果：
+
+added: Set { 1, 2, 3 }
+ 
+
+2.从Set中删除元素。
+
+let set1 = new Set()
+set1.add(1)
+set1.add(2)
+set1.add(3)
+set1.delete(1)
+console.log('deleted:', set1)
+结果：
+
+deleted: Set { 2, 3 }
+ 
+
+3.判断某元素是否存在。
+
+复制代码
+let set1 = new Set()
+set1.add(1)
+set1.add(2)
+set1.add(3)
+set1.delete(1)
+console.log('has(1):', set1.has(1))
+console.log('has(2):', set1.has(2))
+复制代码
+结果：
+
+has(1): false
+has(2): true
