@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<style>
+		legend{
+			color: red;
+		}
+		ul{
+			list-style: none;
+		}
+		fieldset{
+			height: auto;
+			width: 650px;
+		}
+	</style>
+	<body>
+		<h1>请填写个人信息</h1>
+		<fieldset>
+			<legend>基本信息</legend>
+			姓名<input type="text" autofocus="autofocus" name="xingming"><br />
+			年龄<input type="number" name="nianling " min="1" max="999" step="1"/>
+		</fieldset><br />
+		<fieldset>
+			<legend>你想在哪里收到邮件？</legend>
+			邮箱<input id="regemail" class="int-type w-thir" type="text" autocomplete="off" tips="邮箱地址" name="email" rule="" style="ime-mode: disabled;">
+<div id="maillist" style="display: none;">
+  <ul>
+    <li class="on"></li>
+    <li>@qq.com</li>
+    <li>@163.com</li>
+    <li>@126.com</li>
+    <li>@sina.com</li>
+    <li>@hotmail.com</li>
+    <li>@yahoo.com.cn</li>
+    <li>@sohu.com</li>
+    <li>@yahoo.cn</li>
+    <li>@gmail.com</li>
+    <li>@tom.com</li>
+  </ul>
+</div>
+		</fieldset><br />
+		<fieldset>
+			<legend>收入情况</legend>
+			月收入<input type="text" list="shouru" />
+			<datalist id="shouru">
+				<option value="10k"></option>
+				<option value="20k"></option>
+				<option value="30k"></option>
+				<option value="40k"></option>
+				<option value="50k"></option>
+				<option value="60k"></option>
+			</datalist><br />
+			银行卡<input type="text" name="yinhangka" />
+			有效期<input type="date" name="datedemo" />
+		</fieldset><br />
+		<fieldset>
+			<legend>选取提交文件</legend>
+			<input type="file" />
+		</fieldset><br />
+			<input type="submit" />
+			<script type="text/javascript">
+    function $$(id){
+		return document.getElementById(id);
+	}
+	var lists;
+	var len;
+	window.onload=function(){
+		var objtxt=$$("regemail");
+		var objlist=$$("maillist");
+
+        lists=objlist.getElementsByTagName("li");
+        len=lists.length;
+
+        //给每个li绑定一个鼠标的点击事件
+        for(var i=1;i<len;i++){
+            lists[i].onmousedown=function(){
+                objtxt.value=this.textContent;
+                objlist.style.display="none";
+            }
+        }
+
+        //计算这个层的显示位置
+        objtxt.onfocus=function(){
+            objlist.style.display="block";
+        }
+        objtxt.onblur=function(){
+            objlist.style.display="none";
+        }
+
+        //当松开键盘的按键的时候
+        objtxt.onkeyup=function(){
+            //获取文本框中的值
+            var txt=this.value;
+            var flag="";
+            if(txt.indexOf("@")>0){
+                flag=txt.substring(txt.indexOf("@")-1);//获取的输入的@开始的内容
+                txt=txt.substring(0,txt.indexOf("@"));
+            }else{
+                flag="";
+            }
+            var val="";
+            //将这个值放到所有的li前面
+            for(var i=1; i<len; i++){
+                val=lists[i].textContent;
+                val=val.substring(val.indexOf("@"));
+                lists[i].textContent=txt+val;
+            }
+
+            //如果用户输入了@，则检查哪些是满足条件的
+            if(flag!=""){
+                var reg=new RegExp(flag,"i");
+                for(var i=1;i<len;i++){
+                    if(reg.test(lists[i].textContent)){
+                        lists[i].style.display="block";
+                    }else{
+                        lists[i].style.display="none";
+                    }
+                }
+            }
+        }
+    }
+</script>
+		<!--<form action="#" method="git">
+			<input type="number" name="demoNum" min="1" max="100" step="2" /><br/>
+			<input type="email" name="email" placeholder="请输入邮箱" /><br />
+			<input type="submit" /><br />
+			<input type="range" min="0" max="50" step="0.1" name="rdemo" value="0" /><br />
+			<input type="date" name="datedemo" /><br />
+			<input type="color" name="colordemo" /><br />
+			<input type="search" name="movie" />
+			<input type="search" name="gongfu" autocomplete="on" list="names" results />
+			<datalist id="names">
+				<option>亢龙有悔</option>
+				<option>飞龙在天</option>
+				<option>神龙摆尾</option>
+				<option>弹指神通</option>
+			</datalist>
+
+		</form>
+		<form oninput="x.value=parseInt(a.value)+parseInt(b.value)">
+			0<input type="range" id="a" min="1" max="100" />100
+			+<input type="number" id="b"  />
+			=<output name="x" for="a b"></output>
+		</form>-->
+		<!--<form id="testlist" method="get" action="sever.jsp">
+			<input type="submit" name="s1" value="v1" formaction="s1.jsp" />
+		</form>-->
+	</body>
+</html>
+
