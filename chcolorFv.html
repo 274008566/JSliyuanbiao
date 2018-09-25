@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>huanfu</title>
+		<style>
+			#colorblocks {
+				border: solid gray;
+				height: 60px;
+				width: 750px;
+				margin-left: 70px;
+			}
+			
+			#blockOne {
+				width: 20px;
+				height: 20px;
+				float: left;
+				margin-left: 8px;
+				background-color: red;
+			}
+			
+			#blockTwo {
+				width: 20px;
+				height: 20px;
+				float: left;
+				margin-left: 8px;
+				background-color: orange;
+			}
+			
+			#blockThr {
+				width: 20px;
+				height: 20px;
+				float: left;
+				margin-left: 8px;
+				background-color: yellow;
+			}
+			
+			#blockFou {
+				width: 20px;
+				height: 20px;
+				float: left;
+				margin-left: 8px;
+				background-color: green;
+			}
+			
+			#blockFiv {
+				width: 20px;
+				height: 20px;
+				float: left;
+				margin-left: 8px;
+				background-color: blue;
+			}
+			
+			#blockSix {
+				width: 20px;
+				height: 20px;
+				float: left;
+				margin-left: 8px;
+				background-color: purple;
+			}
+			
+			input {
+				margin-top: 20px;
+			}
+			
+			#txt {
+				border: solid gray 0.001px;
+				height: 50px;
+				width: 750px;
+				margin-left: 70px;
+				margin-top: 30px;
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<fieldset style="width: 900px;height: 240px;">
+			<legend style="color: red;">
+				<h2>网页换肤</h2></legend>
+			<div id="colorblocks">
+				<div><input type="button" id="blockOne"></div>
+				<div><input type="button" id="blockTwo"></div>
+				<div><input type="button" id="blockThr"></div>
+				<div><input type="button" id="blockFou"></div>
+				<div><input type="button" id="blockFiv"></div>
+				<input type="button" id="blockSix">
+				<div><span id="flag"></span></div>
+			</div>
+			<div id="txt" style="background-color: peru;">
+				点击上方颜色块更换文本背景颜色
+			</div>
+		</fieldset>
+		<script>
+			window.onload = function() {
+				var arr = ["red", "orange", "yellow", "green", "blue", "purple"];
+				var btns = document.getElementsByTagName('input');
+				var txt = document.getElementById('txt');
+				var flag = document.getElementById('flag');
+				for(let i = 0; i < btns.length; i++) {
+					btns[i].addEventListener("click", function() {
+						localStorage.setItem(btns[i].id, arr[i]);
+						localStorage.setItem(flag.id, arr[i]);
+					})
+				}
+				for(let i = 0; i < btns.length; i++) {
+					if(localStorage.getItem(btns[i].id) && localStorage.getItem(flag.id) == localStorage.getItem(btns[i].id)) {
+						txt.style.backgroundColor = localStorage.getItem(btns[i].id);
+					}
+				}
+				for(let i = 0; i < btns.length; i++) {
+					btns[i].addEventListener("click", function() {
+						for(let j = 0; j < btns.length; j++) {
+							btns[j].style.marginTop = "20px";
+						}
+						txt.style.backgroundColor = localStorage.getItem(btns[i].id);
+						btns[i].style.marginTop = "10px";
+					})
+				}
+			}
+		</script>
+	</body>
+
+</html>
